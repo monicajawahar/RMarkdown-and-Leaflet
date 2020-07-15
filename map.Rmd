@@ -1,0 +1,109 @@
+---
+title: "Map"
+author: "Monica Jawahar"
+date: "16/07/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Abstract:-
+
+This is an Assignment Project: R Markdown and Leaflet of Data-Products Course.Submission requires to Create a web page using R Markdown that features a map created with Leaflet.
+This submission present a list of top National university,the list sorted by 20 Top privite university & 13 Top Public school.The data collect from the [U.S. News](https://www.usnews.com/best-colleges "2018 Best College,U S News Eduction")
+
+## Map Add:-  
+- Fancy icon for privite & public school  
+- Relative url of University  
+- Mini map  
+- To Measure distance between any two point a plung on bottom of the map provided.  
+- A buttons:To map the zoom level to 3
+
+## Top National University Map:-
+
+```{r, echo=FALSE}
+library(leaflet)
+library(leaflet)
+library(htmltools)
+library(htmlwidgets)
+#Make a dataframe of top-20 privite National University in the USA:-
+privite_Univ <- data.frame(Uni_rank=c("National RANK-1","National Rank 2"," NatiOnal Rank 3","National Rank 4","National Rank 5","Nationl Rank 6","National Rank 7","National Rank 8","National Rank 9",
+                                      "National Rank 10","Natioanl Rank 11","Natioanl Rank 12","National Rank 13","National Rank 14","National Rank 15","Natioanal Rank 16","Natioal Rank 17",
+                                      "Natioanl Rank 18","Natioanl Rank 19","Natioanl Rank 20"), 
+              
+priv_url=c("<a href='https://www.usnews.com/best-colleges/princeton-university-2627'>Princetone University</a>",
+           "<a href='https://www.usnews.com/best-colleges/harvard-university-2155'>Harvard University</a>",
+           "<a href='https://www.usnews.com/best-colleges/university-of-chicago-1774'>University of Chicago</a>",
+           "<a href='https://www.usnews.com/best-colleges/yale-university-1426'>Yale University</a>",
+           "<a href='https://www.usnews.com/best-colleges/columbia-university-2707'>Columbia University</a>",
+           "<a href='https://www.usnews.com/best-colleges/mit-2178'>Massachusetts ins.of tech MIT</a>",
+           "<a href='https://www.usnews.com/best-colleges/stanford-1305'>Stanford University Stanford CA</a>",
+           "<a href='https://www.usnews.com/best-colleges/university-of-pennsylvania-3378'>Uni.Pennsylvania Philadelphia PA</a>",
+           "<a href='https://www.usnews.com/best-colleges/duke-university-2920'>Duke University</a>",
+           "<a href='https://www.usnews.com/best-colleges/cal-tech-1131'>California Institute of Technology pasadena CA</a>",
+           "<a href='https://www.usnews.com/best-colleges/dartmouth-college-2573'>Dartmouth College Hanover NH</a>",
+           "<a href='https://www.usnews.com/best-colleges/jhu-2077'>Johns Hopkins University</a>",
+           "<a href='https://www.usnews.com/best-colleges/northwestern-1739'>Northwestern University Evanston IL</a>",
+           "<a href='https://www.usnews.com/best-colleges/brown-university-3401'>Brown University Providence RI</a>",
+           "<a href='https://www.usnews.com/best-colleges/cornell-university-2711'>Cornell University Ithaca NY</a>",
+           "<a href='https://www.usnews.com/best-colleges/rice-3604'>Rice University Houston TX</a>",
+           "<a href='https://www.usnews.com/best-colleges/vanderbilt-3535'>Vanderbilt University Nashville TN</a>",
+           "<a href='https://www.usnews.com/best-colleges/notre-dame-1840'>University of Nortre Dame Notre IN</a>",
+           "<a href='https://www.usnews.com/best-colleges/washington-university-st-louis-2520'>Washington University in st.Louis st Louis MO</a>",
+           "<a href='https://www.usnews.com/best-colleges/georgetown-university-1445'>Geogetown University Washington DC</a>"),
+              
+lat2=c(40.3440489,42.3770068,41.7886119,41.3163284,40.8075395,42.3600949,37.4274787,39.9522229,36.0014301,34.137662,43.7044445,39.3299054,42.0564634,41.8267758,42.4534531,29.7173987,36.1447077,
+       41.7055756,38.6487937,38.9076131),
+lan2=c(-74.6864676,-71.1188488,-87.600902,-72.9245318,-73.9647614,-71.0963487,-122.1719077,-75.1954024,-78.9404173,-118.1274577,-72.2908822,-76.6227064,-87.6774557,-71.4047369,-76.4756914,-95.4040199,-86.8048438       ,-86.2375275,-90.3129849,-77.0744472))
+#Make popup with University information:-
+state_popup <- paste(sep = "<br/>",
+                     privite_Univ$priv_url,
+                     privite_Univ$Uni_rank)
+                  
+                     
+# Make A icon for Privite university:-
+Privite_UniIcon <- makeIcon(
+  iconUrl ="https://www.chameleonjohn.com/assets/project/css/images/new/icons/college-icon.png", iconWidth = 31*215/230, iconHeight = 31,iconAnchorX = 31*215/230/2, iconAnchorY = 16)
+#Make dataframe of top 13 public School:-
+public_Univ <- data.frame(pub_url=c("<a href='https://www.usnews.com/best-colleges/uc-berkeley-1312'>University of California Berkeley CA</a>",
+          "<a herf='https://www.usnews.com/best-colleges/ucla-1315'>University of California Los Angeles CA</a>",
+          "<a herf='https://www.usnews.com/best-colleges/uva-6968'>University of Virginia Charlottesville VA</a>",
+          "<a herf='https://www.usnews.com/best-colleges/university-of-michigan-9092'>University of Michigan Ann Arbor Ann Arbor MI </a>",
+          "<a herf='https://www.usnews.com/best-colleges/unc-2974'>University of North Carolina Chapel Hill Chapel Hill NC</a>",
+          "<a herf='https://www.usnews.com/best-colleges/william-and-mary-3705'>College of William & Mary Williamsburg VA</a>",
+          "<a herf='https://www.usnews.com/best-colleges/georgia-tech-1569'>Georgia Institute of Technology Atlanta GA</a>",
+          "<a herf='https://www.usnews.com/best-colleges/ucsb-1320'>University of California Santa Barbara Santa Barbara CA </a>",
+          "<a herf='https://www.usnews.com/best-colleges/uc-irvine-1314'>University of California Irvine CA</a>",
+          "<a herf='https://www.usnews.com/best-colleges/ucsd-1317'>University of California San Diego La Jolla CA </a>",
+          "<a herf='https://www.usnews.com/best-colleges/university-of-florida-1535'>University of Florida Gainesville FL </a>",
+          "<a herf='https://www.usnews.com/best-colleges/uc-davis-1313'>University of California Davis Davis CA </a>",
+          "<a herf='https://www.usnews.com/best-colleges/university-of-wisconsin-3895'>University of Wisconsin Madison Madison WI </a>"),
+Pub_Rank=c("Public School Ranking 1","Public School Ranking 2","Public School Ranking 3","Public School Ranking 4","Public School Ranking 5","Public School Ranking 6","Public School Ranking 7","Public School      Ranking 8","Public School Ranking 9","Public School Ranking 10","Public School Ranking 11","Public School Ranking 12","Public School Ranking 13"),
+Pub_NaRank=c("Natioanl Rank 21","Natioanl Rank 21","Natioanl Rank 22","Natioanl Rank 28","Natioanl Rank 30","Natioanl Rank 32","Natioanl Rank 34","Natioanl Rank 37","Natioanl Rank 42","Natioanl Rank               42","Natioanl Rank 42","Natioanl Rank 46","Natioanl Rank 46"),
+lat1=c(37.8719034,34.0457588,38.0335571,42.2703926,35.9088424, 37.2682806,33.7756222,34.4147942,33.6501074,32.8785627,29.6436371,38.5545033,43.1056522),
+lan1=c(-122.2607286,-118.3766759, -78.5101659,-83.764851,-79.0525662,-76.7135734,-84.3984737,-119.8473497,-117.8380229, -117.2422263,-82.3571189,-121.6848654,-89.4551045))
+#Make popup for public school with respective url and rank:-
+state_popup1 <- paste(sep = "<br/>",
+                     public_Univ$pub_url,
+                     public_Univ$Pub_NaRank,
+                     public_Univ$Pub_Rank)
+#Make Icon for public school:-
+Public_UniIcon <- makeIcon(
+  iconUrl ="https://cdn2.iconfinder.com/data/icons/knowledge-is-power/60/library-512.png",iconWidth = 31*215/230, iconHeight = 31,iconAnchorX = 31*215/230/2, iconAnchorY = 16)
+  
+#Make Map for TOp 20 Privite & top 13 Public school:-
+leaflet() %>% addTiles()%>%
+  addMarkers(lat=privite_Univ$lat2,lng=privite_Univ$lan2,icon = Privite_UniIcon,popup=state_popup)%>%
+addMarkers(lat=public_Univ$lat1,lng=public_Univ$lan1,icon = Public_UniIcon,popup=state_popup1)%>%
+  addMeasure( position = "bottomleft",
+    primaryLengthUnit = "meters",
+    primaryAreaUnit = "sqmeters",
+    activeColor = "#3D535D",
+    completedColor = "#7D4479")%>%
+  addMiniMap()%>%
+   addEasyButton(easyButton(
+    icon="fa-globe", title="Zoom to Level 3",
+    onClick=JS("function(btn, map){ map.setZoom(3); }")))
+```
